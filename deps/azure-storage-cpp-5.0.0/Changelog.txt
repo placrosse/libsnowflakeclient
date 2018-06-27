@@ -1,0 +1,243 @@
+Azure Storage Client Library for C++
+History of Changes
+
+Changes in v5.0.0
+- Dropped the support for Nuget package with name 'wastorage', now this client library only release with Nuget name 'Microsoft.Azure.Storage.CPP'.
+- Added support for specifying installation destination when compiling with cmake to resolve feature request #183.
+- Enabled CMake on Windows.
+- Added check for metadata name that is empty or contains whitespaces to fail fast, and trimmed beginning/trailing whitespaces for metadata value.
+- Resolved an issue where partial xml body will not throw exception when being parsed.
+- Resolved an issue where retry for Table's batch operation always returns the first response.
+
+Changes in v4.0.0:
+- Fixed an issue where blob names that only contains space cannot be listed properly.
+- Added more compiler setting to unblock ApiScanning.
+- Added a new `nuspec` set that will release `Microsoft.Azure.Storage.CPP` and modified the `wastorage`'s nuspec to depend on Microsoft.Azure.Storage.CPP. Note that 4.0.0 will be the last version of `wastorage`. We strongly advice our user to use Nuget package `Microsoft.Azure.Storage.CPP` start from 4.0.0
+- Resolved an issue where 3rd attempt of retry to download a blob or file will write more data than expected to destination stream.
+- Removed dependency on `libxml++` for Linux platforms. But now this SDK depends on `libxml2`, which is available for most Linux distributions.
+- `azure::storage::file::upload_properties` and `azure::storage::file::upload_properties_async` will no longer resize a file, even when properties contains length that is being set to 0 or other values.
+
+Changes in v3.2.1:
+- Added tag `<requireLicenseAcceptance>true</requireLicenseAcceptance>` in .nuspec files and modified the author to `Microsoft` to comply to the new Microsoft Nuget package rule set. Note that this will require the Nuget package user to accept the license manually when newly installing or upgrading 3.2.1 version (and on) of this client library.
+
+Changes in v3.2:
+- Added support for blob archive feature, which includes following changes:
+  - Added two new APIs for `cloud_blob` to support copying a blob to a new destination setting premium access tier, note that currently, only premium page blobs are supported so these two APIs should only be used for page blobs.
+    - `utility::string_t start_copy(const web::http::uri& source, const azure::storage::premium_blob_tier tier, const access_condition& source_condition, const access_condition& destination_condition, const blob_request_options& options, operation_context context)`.
+    - `pplx::task<utility::string_t> start_copy_async(const web::http::uri& source, const premium_blob_tier tier, const access_condition& source_condition, const access_condition& destination_condition, const blob_request_options& options, operation_context context)`.
+  - Added two new APIs for block blob to support setting the standard blob tier.
+    - `void set_standard_blob_tier(const standard_blob_tier tier, const access_condition & condition, const blob_request_options & options, operation_context context)`
+    - `pplx::task<void> set_standard_blob_tier_async(const standard_blob_tier tier, const access_condition & condition, const blob_request_options & options, operation_context context)`
+  - Added two new APIs for page blob to support setting the premium blob tier.
+    - `void set_premium_blob_tier(const premium_blob_tier tier, const access_condition & condition, const blob_request_options & options, operation_context context)`
+    - `pplx::task<void> set_premium_blob_tier_async(const premium_blob_tier tier, const access_condition & condition, const blob_request_options & options, operation_context context)`
+  - `cloud_blob_properties` now contains 4 more attributes: ` standard_blob_tier`, `premium_blob_tier`, `archive_status`, `access_tier_inferred`. They will be updated using `download_attributes`, and will be set to server returned value when calling `list_blobs`.
+  - Added two new APIs to support creating page blob with premium access tier.
+    - `pplx::task<void> create_async(utility::size64_t size, const premium_blob_tier tier, int64_t sequence_number, const access_condition& condition, const blob_request_options& options, operation_context context)`
+    - `void create(utility::size64_t size, const premium_blob_tier tier, int64_t sequence_number, const access_condition& condition, const blob_request_options& options, operation_context context)`
+
+Changes in v3.1:
+- #136 Fixed error in get blob properties when value in x-ms-copy-source is not encoded correctly.
+- #124 Fixed the bug in parallel download when offset not zero.
+- #123 Fixed the bug that client will overwrite default retry poilcy.
+- Fixed #132 build issue caused by macro min
+- Throwed exception to warn on the conflict between primary_only and download_services_stats
+- Fixed the bug that file share's ETag not updated after quota resize.
+- Fixed the bug that file directory's LMT not updated after upload metadata.
+- Fixed the bug that file's LMT not updated after upload metadata.
+
+Changes in v3.0:
+- Default Rest API version is 2016-05-31.
+- Supported large block size to 100MB, single blob upload threshold to 256MB.
+- Add cloud_blob_container_properties::public_access for public access level of container. The value will be populated in:
+  - cloud_blob_client::list_containers
+  - cloud_blob_container::create
+  - cloud_blob_container::download_attributes
+  - cloud_blob_container::download_permissions
+- Message information including the pop receipt will now be populated to the pass-in message in cloud_queue::add_message.
+- API cloud_file_directory::list_files_and_directories now accepts a new parameter that limits the listing to a specified prefix.
+- All table APIs now accept and enforce the timeout query parameter.
+- Value of cloud_blob_properties::content_md5 for stored Content-MD5 property will also be populated in cloud_blob::download_range_to_stream.
+- Add cloud_page_blob::start_incremental_copy to support incremental copying a snapshot of the source page blob to a destination page blob.
+- Using If-None-Match: * will now fail when reading a blob.
+- Include empty headers when signing request.
+- Fixed the bug that might cause "invalid handle" exception during retry for download to stream APIs.
+- Fixed the issuse that does not work with v141 toolset.
+- Fixed the build issue for MFC/ATL projects caused by macro "max".
+- Changed constant strings' type from * to [].
+- Fixed compile error when _MSC_VER=1810.
+- Use <> instead of "" to include package headers.
+- Rename TargetName for Debug configuration from wastorage to wastoraged.
+
+Changes in v2.6:
+- Supported parallel download for blobs and files
+- Supported installation from Vcpkg
+
+Changes in v2.5:
+- Upgraded Casablanca dependency to 2.9.1
+- Default Rest API version is 2015-12-11
+- Supported server-side encryption for blobs
+- Fixed the bug that enumeration iterator couldn't use non-const methods, such as create/delete.
+- Fixed the bug that request id used but wasn't logged correctly in unit tests.
+- Changed predefinition for Windows platform from WIN32 to _WIN32.
+- Fixed the bug that queue message operations throws exception "Error: The Uri for the target storage location is not specified. Please consider changing the request's location mode." on VS 2013 and Linux platform.
+- Fixed the bug that xml constructor throws exception "The namespace () has not been declared." on Linux platform.
+
+Changes in v2.4:
+- Added support for file service: file client, file share, file directory and file.
+- Performance improvements with URI cache, string concat, uri builder parameters.
+- Fixed the bug that cloud_blob_container didn't exported by dll.
+- Fixed the bug that xml parser for table's error message.
+- Fixed the bug that copying blob from other accounts doesn't use source credentials.
+- Fixed the bug that network took too long time to close while network error happened.
+- Fixed the bug that blob name with reserved characters didn't split with right order.
+- Fixed the but that blob properties didn't clear after deletion.
+- Fixed the coding style for static string to prevent ODR issue.
+- Fixed the build issue on OS X, but not officially supporting OS X.
+
+Changes in v2.3:
+- Added the following interfaces to support programmatically configurable HTTP/HTTPS proxy
+  - operation_context::set_default_proxy
+  - operation_context::set_proxy
+- Upgraded Casablanca dependency to 2.8.0
+- Fixed a bug that the retry policy of a default service client request options is not used
+
+Changes in v2.2:
+- Default REST API version is 2015-04-05
+- Supported account SAS
+- Supported IP ACL and HTTP protocol in account/service SAS
+- Introduced add permission for blob SAS
+- Upgraded Casablanca dependency to 2.7.0
+- Added Microsoft Visual C++ compiler version to user agent string if MSVC is used to compile.
+- Fixed a bug that cloud_block_blob::upload_block_list_async method doesn't respect use_transactional_md5 field
+
+Changes in v2.1:
+- Upgraded Casablanca dependency to 2.6.0
+- Added support for Visual Studio 2015, dropped support for Visual Studio 2012
+- Separated Nuget packages to wastorage.v120 and wastorage.v140. For backwards compatibility, wastorage became umbrella package which has both packages as dependencies.
+- Retired CoApp autopkg. Nuget.exe and nuspec files are used to generate Nuget packages.
+- Fixed an issue that MSBuild must run twice to first download Nuget packages then compile.
+
+Changes in v2.0:
+- Default REST API version is 2015-02-21
+- Added cloud_append_blob class, which supports the new blob type: append blob.
+- Added support of ranged-based for-loop for result_iterator class
+- Changed behavior to stop stripping out query parameters passed in with the resource URI. Some query parameters such as comp, restype, snapshot and api-version will still be removed.
+- Deprecated cloud_blob::start_copy_from_blob and cloud_blob::start_copy_from_blob_async. Use cloud_blob::start_copy instead.
+- Fixed the bug that cloud_table::execute(const table_operation&) method doesn't respect cloud_table_client::default_request_options.
+
+Changes in v1.0:
+- Changed return value type of cloud_blob_client::list_blobs_segmented, cloud_blob_container::list_blobs_segmented and cloud_blob_directory::list_blobs_segmented methods from blob_result_segment to list_blob_item_segment
+- Removed type blob_result_segment
+- Redefined following types using result_segment<typename result_type> template:
+  - queue_result_segment
+  - table_result_segment
+  - table_query_segment
+- Added following functions which retrieve results from service lazily:
+  - cloud_blob_client::list_containers
+  - cloud_blob_client::list_blobs
+  - cloud_blob_container::list_blobs
+  - cloud_blob_directory::list_blobs
+  - cloud_queue_client::list_queues
+  - cloud_table_client::list_tables
+  - cloud_table::execute_query
+- Updated unit test project and unit test guidance to refer to UnitTest++ in GitHub.
+
+Changes in v0.6:
+- Fixed the bug that cloud_blob::download_range_to_stream corrupted downloaded data if retry succeeded after a failed request
+- Fixed the bug that cloud_blob::download_range_to_stream might access the target stream after the call completed and led to access violation under a race condition
+- Changed waiting between retries asynchronous on Linux
+- Changed constructors not intended for public use to private for cloud_blob, cloud_block_blob and cloud_page_blob classes
+- Added move constructors and move assignment operators to many classes for Visual Studio 2012 and 2013
+- Changed table_entity::set_timestamp to a private method as timestamp is read-only
+- User headers in operation context now overwrite existing header values
+- Removed following listing functions as they don't work well under a large scale. Please use segmented listing functions such as cloud_queue_client::list_queues_segmented instead
+  - cloud_queue_client::list_queues
+  - cloud_queue_client::list_queues_async
+  - cloud_table_client::list_tables
+  - cloud_table_client::list_tables_async
+  - cloud_table::execute_query
+  - cloud_table::execute_query_async
+- Upgraded Casablanca dependency to 2.4.0
+
+Changes in v0.5:
+- Default REST API version is 2014-02-14
+- Added parameter sequence_number to the following functions:
+  - cloud_page_blob::create_async
+  - cloud_page_blob::open_write_async
+  - cloud_page_blob::upload_from_stream_async
+  - cloud_page_blob::upload_from_file_async
+  - cloud_page_blob::create
+  - cloud_page_blob::open_write
+  - cloud_page_blob::upload_from_stream
+  - cloud_page_blob::upload_from_file
+- The client checks blob lease times and throws std::invalid_argument for invalid lease times. Previously, this would have been checked on the service and azure::storage::storage_exception would have been thrown.
+- Improvements on error handling:
+  - azure::storage::storage_exception now has inner_exception populated with the actual underlying exception thrown
+  - azure::storage::storage_exception now has more information about errors on storage service side
+  - was/error_code_strings.h is added including messages for all possible error codes from storage service
+- Improvements on Unit Tests:
+  - All test cases now print out test name and client reqeust ID
+  - Added new cases for containers listing and continuation token
+  - Unit Test configuraiton file is copied to output directory via CMake now, so no need to copy it manually under Linux
+- Several fixes for bugs:
+  - Cannot generate SAS tokens for tables with upper-case letters in table name
+  - cloud_blob_istreambuf and cloud_blob_ostreambuf is set to a wrong position after seek() method is called.
+  - Content-MD5 header is incorrectly set when sending Put Page requests with page-write set to clear
+
+Changes in v0.4:
+- Now supports building on Linux
+- Added http_buffer_size request option to control the internal buffer size used in the HTTP layer when downloading data. The default size is 64KB.
+- Blob downloads that are interrupted resume automatically from where the download left off when being retried.
+- Performance improvement when uploading and downloading blobs.
+- Added const version of the operation_context::user_headers() function.
+- Fixed incorrect initialization of some members in the cloud_blob_container_properties and retry_info classes.
+- Added a default of 24 days for a maximum execution time for an operation
+- Changed the exception type if you upload a blob from a seekable stream but the stream is too short for the desired blob length.  
+  - Used to throw azure::storage::storage_exception in some cases, now throws std::invalid_argument always.
+  - Now checks for this case explicitly before the upload is started.
+  - Non-seekable streams still throw std::invalid_argument as before.
+- Fixed several bugs, including incorrect uses of std::move and compile-time differences between Visual Studio and g++.
+- Added client request ID into log lines.
+- Upgraded Casablanca dependency to 2.3.0
+
+Changes in v0.3:
+- Changed namespace to azure::storage.
+- Added support for secondary location access in Azure Storage Emulator.
+- Added support for downloading service stats for blob, table, and queue services to check geo-replication status.
+- Added download_to_file_async function in cloud_blob class.
+- Added upload_from_file_async function in cloud_block_blob and cloud_page_blob classes.
+- The HTTP status code and extended error information are populated when the table service returns an error.
+- The SAS token returned by the get_shared_access_signature functions does not include a question mark (?) prefix.
+- The storage_credentials class stores SAS tokens without a question mark (?) prefix.
+- Added support for accepting SAS URIs to tables and queues.
+- Fixed error where table query filter strings containing special characters were not encoded correctly.
+- Fixed intermittent error where authentication fails when trying to update a queue message.
+- Fixed a race condition causing invalid handle errors when sending parallel requests right after loading the module.
+- The ETag is populated on table entities returned from table retrieve operations.
+- Changed retry policies to not retry when HTTP status code 408 is received.
+- Added check to prevent uploading metadata values that are empty or consist entirely of whitespace.
+- Changed the storage_uri class to permit specifying only a secondary URI.
+- No value is set for the server timeout by default, which means the service's default value will be in affect unless the caller specifies a value.
+- Added more parameter validation.
+- Removed the constness from the return values of binary_value, datetime_value, guid_value, and string_value functions in entity_property class.
+- Removed the constness from the return values of filter_string and select_columns functions in table_query class.
+- Changed many functions to accept pass-by-value arguments to support move semantics.
+- Changed many functions to accept pass-by-reference arguments or return references as a performance improvement.
+- Made some constructors explicit to avoid implicit conversions. This affects these classes: 
+  canonicalizer, shared_key_blob_queue_canonicalizer, shared_key_lite_blob_queue_canonicalizer, shared_key_table_canonicalizer,
+  shared_key_lite_table_canonicalizer, sas_authentication_handler, shared_key_authentication_handler, continuation_token,
+  retry_info, retry_policy, cloud_queue_message, cloud_queue_client, basic_common_retry_policy, cloud_client
+- Major performance improvement when executing many requests in parallel.
+- Minor bug fixes and performance improvements.
+
+Changes in v0.2:
+- Added sample projects for getting started with the library.
+- Removed blob_continuation_token typedef (use continuation_token instead).
+- Renamed table_entity_property class to entity_property.
+- Renamed entity_property_type enum to edm_type.
+- Renamed query_payload_format enum to table_payload_format.
+- Minor bug fixes and performance improvements.
+
+Changes in v0.1:
+- Initial release of the library including support for blob, table, and queue storage abstractions and providing additional functionality such as retry logic, authentication, logging, and more.

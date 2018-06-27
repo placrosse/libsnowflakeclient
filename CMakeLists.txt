@@ -100,6 +100,8 @@ set (SOURCE_FILES_PUT_GET
         cpp/FileTransferExecutionResult.hpp
         cpp/IFileTransferAgent.cpp
         cpp/IStorageClient.hpp
+        cpp/SnowflakeAzureClient.cpp
+        cpp/SnowflakeS3Client.hpp
         cpp/SnowflakeS3Client.hpp
         cpp/SnowflakeS3Client.cpp
         cpp/SnowflakeTransferException.cpp
@@ -156,6 +158,8 @@ if (LINUX)
     find_library(CRYPTO_LIB libcrypto.a PATHS deps-build/${PLATFORM}/openssl/lib/ REQUIRED)
     find_library(AWS_CORE_LIB libaws-cpp-sdk-core.a PATHS deps-build/${PLATFORM}/aws/lib64/ REQUIRED)
     find_library(AWS_S3_LIB libaws-cpp-sdk-s3.a PATHS deps-build/${PLATFORM}/aws/lib64/ REQUIRED)
+    find_library(CPPRESTSDK_LIB libcpprest.a PATHS deps-build/${PLATFORM}/cpprestsdk/lib REQUIRED)
+    find_library(AZURE_STORAGE_LIB libazurestorage.a PATHS deps-build/${PLATFORM}/azure-storage/lib REQUIRED)
 endif ()
 
 if (APPLE)
@@ -183,6 +187,8 @@ include_directories(
         deps-build/${PLATFORM}/openssl/include
         deps-build/${PLATFORM}/zlib/include
         deps-build/${PLATFORM}/aws/include
+        deps-build/${PLATFORM}/azure-storage/include
+        deps-build/${PLATFORM}/cpprestsdk/include
         include
         lib)
 
@@ -191,6 +197,8 @@ message("libssl is located at " ${SSL_LIB})
 message("libcrypto is located at " ${CRYPTO_LIB})
 message("libaws-cpp-sdk-core is located at " ${AWS_CORE_LIB})
 message("libaws-cpp-sdk-s3 is located at " ${AWS_S3_LIB})
+message("libcpprest.a is located at " ${CPPRESTSDK_LIB})
+message("libazurestorage.a is located at " ${AZURE_STORAGE_LIB})
 
 
 add_library(snowflakeclient STATIC ${SOURCE_FILES} ${SOURCE_FILES_PUT_GET} ${SOURCE_FILES_CPP_WRAPPER})
@@ -205,6 +213,8 @@ if(LINUX)
             "${CMAKE_CURRENT_SOURCE_DIR}/deps-build/${PLATFORM}/openssl/lib"
             "${CMAKE_CURRENT_SOURCE_DIR}/deps-build/${PLATFORM}/zlib/lib"
             "${CMAKE_CURRENT_SOURCE_DIR}/deps-build/${PLATFORM}/aws/lib64"
+            "${CMAKE_CURRENT_SOURCE_DIR}/deps-build/${PLATFORM}/cpprestsdk/lib"
+            "${CMAKE_CURRENT_SOURCE_DIR}/deps-build/${PLATFORM}/azure-storage/lib"
     )
 elseif()
 	link_directories(

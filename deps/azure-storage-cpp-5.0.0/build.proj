@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+  DefaultTargets="Build">
+  
+  <ItemGroup>
+    <Solution Include="build.sln" >      
+        <Properties>Configuration=Debug;Platform=Win32</Properties>
+    </Solution>
+    <Solution Include="build.sln" >
+        <Properties>Configuration=Release;Platform=Win32</Properties>
+    </Solution>
+    <Solution Include="build.sln" >
+        <Properties>Configuration=Debug;Platform=x64</Properties>
+    </Solution>
+    <Solution Include="build.sln" >
+        <Properties>Configuration=Release;Platform=x64</Properties>
+    </Solution>
+  </ItemGroup>
+
+  <Target Name="RestorePackages">
+    <Exec Command="&quot;tools\NuGet.exe&quot; restore &quot;%(Solution.Identity)&quot;" />
+  </Target>
+  
+  <Target Name="Clean">
+    <!-- Clean the solutions -->
+    <Message Importance="high" Text="Cleaning all projects..." ContinueOnError="true" />
+    <MSBuild
+      Projects="@(Solution)"
+      Targets="Clean"
+      BuildInParallel="true" />
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="RestorePackages;Clean">
+    <Message Importance="high" Text="Building all versions of the projects..." />
+    <MSBuild
+      Projects="@(Solution)"
+      Targets="Build"
+      BuildInParallel="true" />
+  </Target>
+</Project>

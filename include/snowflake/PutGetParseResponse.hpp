@@ -57,6 +57,10 @@ struct StageInfo
   // required by s3 client
   std::string region;
 
+  std::string storageAccount;
+
+  std::string endPoint;
+
   std::unordered_map<std::string, char *> credentials;
 };
 

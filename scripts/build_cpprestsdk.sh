@@ -12,9 +12,9 @@ set -o pipefail
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $DIR/_init.sh
-CPPRESTSDK_SOURCE_DIR=$DEPS_DIR/cpprestsdk-2.10.1/
+CPPRESTSDK_SOURCE_DIR=$DEPS_DIR/cpprestsdk-2.9.1/
 CPPRESTSDK_CMAKE_BUILD_DIR=$CPPRESTSDK_SOURCE_DIR/cmake-build
-CPPRESTSDK_INSTALL_DIR=$DEPENDENCY_DIR/azure
+CPPRESTSDK_INSTALL_DIR=$DEPENDENCY_DIR/cpprestsdk
 
 cpprestsdk_configure_opts=()
 if [[ "$target" != "Release" ]]; then
@@ -27,12 +27,13 @@ cpprestsdk_configure_opts+=(
     "-DCMAKE_CXX_COMPILER=$GXX"
     "-DCMAKE_INSTALL_PREFIX=$CPPRESTSDK_INSTALL_DIR"
     "-DBUILD_SHARED_LIBS=OFF"
-    "-DCMAKE_PREFIX_PATH=\"$LIBCURL_BUILD_DIR/;$OPENSSL_BUILD_DIR/\""
     "-DOPENSSL_ROOT_DIR=$DEPENDENCY_DIR/openssl"
     "-DOPENSSL_USE_STATIC_LIBS=true"
     "-DBOOST_ROOT=/opt/boost"
     "-DWERROR=OFF"
     "-DBUILD_TESTS=OFF"
+    "-DBUILD_SAMPLES=OFF"
+    "-DCPPREST_EXCLUDE_WEBSOCKETS=1"
 )
 
 rm -rf $CPPRESTSDK_INSTALL_DIR

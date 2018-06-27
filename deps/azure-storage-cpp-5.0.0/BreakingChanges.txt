@@ -1,0 +1,87 @@
+Azure Storage Client Library for C++
+History of Breaking Changes
+Breaking Changes in v5.0:
+- Dropped Nuget package with name 'wastorage'.
+
+Breaking Changes in v4.0:
+- `azure::storage::file::upload_properties` and `azure::storage::file::upload_properties_async` will no longer resize a file, even when properties contains length that is being set to 0 or other values.
+
+Breaking Changes in v3.0:
+- Default Rest API version is 2016-05-31.
+- Using If-None-Match: * will now fail when reading a blob.
+- Rename TargetName for Debug configuration from wastorage to wastoraged.
+
+Breaking Changes in v2.5:
+- Upgraded Casablanca dependency to 2.9.1
+
+Breaking Changes in v2.3:
+- Upgraded Casablanca dependency to 2.8.0
+
+Breaking Changes in v2.2:
+- Upgraded Casablanca dependency to 2.7.0
+- Added Microsoft Visual C++ compiler version to user agent string if MSVC is used to compile.
+
+Breaking Changes in v2.1:
+- Upgraded Casablanca dependency to 2.6.0
+- Added support for Visual Studio 2015, dropped support for Visual Studio 2012
+- Separated Nuget packages to wastorage.v120 and wastorage.v140. For backwards compatibility, wastorage became umbrella package which has both packages as dependencies.
+- Retired CoApp autopkg. Nuget.exe and nuspec files are used to generate Nuget packages.
+
+Breaking Changes in v2.0:
+- Changed behavior to stop stripping out query parameters passed in with the resource URI. Some query parameters such as comp, restype, snapshot and api-version will still be removed.
+- Deprecated cloud_blob::start_copy_from_blob and cloud_blob::start_copy_from_blob_async. Use cloud_blob::start_copy instead.
+
+Breaking Changes in v1.0:
+- Changed return value type of cloud_blob_client::list_blobs_segmented, cloud_blob_container::list_blobs_segmented and cloud_blob_directory::list_blobs_segmented methods from blob_result_segment to list_blob_item_segment
+- Removed type blob_result_segment
+
+Breaking Changes in v0.6:
+- Removed following functions:
+  - cloud_queue_client::list_queues
+  - cloud_queue_client::list_queues_async
+  - cloud_table_client::list_tables
+  - cloud_table_client::list_tables_async
+  - cloud_table::execute_query
+  - cloud_table::execute_query_async
+- Changed table_entity::set_timestamp to a private method as timestamp is read-only
+- Upgraded Casablanca dependency to 2.4.0
+
+Breaking Changes in v0.5:
+- Added parameter sequence_number to the following functions:
+  - cloud_page_blob::create_async
+  - cloud_page_blob::open_write_async
+  - cloud_page_blob::upload_from_stream_async
+  - cloud_page_blob::upload_from_file_async
+  - cloud_page_blob::create
+  - cloud_page_blob::open_write
+  - cloud_page_blob::upload_from_stream
+  - cloud_page_blob::upload_from_file
+- The client checks blob lease times and throws std::invalid_argument for invalid lease times.  Previously, this would have been checked on the service
+    and azure::storage::storage_exception would have been thrown.
+
+Breaking Changes in v0.4:
+- Upgraded Casablanca dependency to 2.3.0
+- Changed the exception type in some cases if you upload a blob from a seekable stream but the stream is too short for the desired blob length.
+- Used to throw azure::storage::storage_exception in some cases, now throws std::invalid_argument always.
+
+Breaking changes in v0.3:
+- Changed namespace to azure::storage.
+- The SAS token returned by the get_shared_access_signature functions does not include a question mark (?) prefix.
+- The storage_credentials class stores SAS tokens without a question mark (?) prefix.
+- Added check to prevent uploading metadata values that are empty or consist entirely of whitespace.
+- Removed the constness from the return values of binary_value, datetime_value, guid_value, and string_value functions in entity_property class.
+- Removed the constness from the return values of filter_string and select_columns functions in table_query class.
+- Changed many functions to accept pass-by-reference arguments or return references as a performance improvement.
+- Made some constructors explicit to avoid implicit conversions. This affects these classes:
+    canonicalizer, shared_key_blob_queue_canonicalizer, shared_key_lite_blob_queue_canonicalizer,  shared_key_table_canonicalizer, shared_key_lite_table_canonicalizer, 
+    sas_authentication_handler, shared_key_authentication_handler, continuation_token, retry_info, retry_policy, cloud_queue_message, cloud_queue_client, 
+    basic_common_retry_policy, cloud_client
+
+Breaking changes in v0.2:
+- Removed blob_continuation_token typedef (use continuation_token instead).
+- Renamed table_entity_property class to entity_property.
+- Renamed entity_property_type enum to edm_type.
+- Renamed query_payload_format enum to table_payload_format.
+
+Breaking changes in v0.1:
+(None)

@@ -6,7 +6,8 @@
 #define SNOWFLAKECLIENT_SNOWFLAKEAZURECLIENT_HPP
 
 #include "IStorageClient.hpp"
-#include "snowflake/PutGetParseResponse.hpp"
+#include "snowflake/PutGetParseResponse.hpp"a
+#include <was/blob.h>
 
 namespace Snowflake
 {
@@ -24,6 +25,8 @@ public:
 
 private:
   void computeConnectionString(StageInfo *stageInfo, std::string &connectionString);
+
+  azure::storage::cloud_blob_client m_blobClient;
 };
 }
 }

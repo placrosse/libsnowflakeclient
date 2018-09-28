@@ -44,6 +44,18 @@ if %ERRORLEVEL% NEQ 0 goto :error
 cd %AZURESTORAGECPP_CMAKE_BUILD_DIR% 
 if %ERRORLEVEL% NEQ 0 goto :error
 
+
+::Download source code of azure storage cpp
+if not exist %AZURESTORAGECPP_SOURCE_DIR% (
+	cd %scriptdir%\..\deps
+
+	curl -L https://github.com/howryu/azure-storage-cpp/archive/v5.1.1.zip > azure-storage-cpp-5.1.1.zip
+	if %ERRORLEVEL% NEQ 0 goto :error
+	
+	unzip azure-storage-cpp-5.1.1.zip
+	if %ERRORLEVEL% NEQ 0 goto :error
+)
+
 REM https://github.com/aws/aws-sdk-cpp/issues/383
 ::set GIT_DIR=%TMP%
 

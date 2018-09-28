@@ -8,6 +8,8 @@
 #include "RemoteStorageRequestOutcome.hpp"
 #include "FileMetadata.hpp"
 
+#define SFC_DIGEST "sfc-digest"
+
 namespace Snowflake
 {
 namespace Client

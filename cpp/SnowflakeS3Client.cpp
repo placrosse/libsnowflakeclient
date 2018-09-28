@@ -34,7 +34,6 @@
 #define AWS_KEY_ID "AWS_KEY_ID"
 #define AWS_SECRET_KEY "AWS_SECRET_KEY"
 #define AWS_TOKEN "AWS_TOKEN"
-#define SFC_DIGEST "sfc-digest"
 
 namespace Snowflake
 {

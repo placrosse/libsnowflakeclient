@@ -4,7 +4,7 @@
 
 #include <snowflake/SnowflakeTransferException.hpp>
 #include "FileTransferExecutionResult.hpp"
-#include "snowflake/platform.h";
+#include "snowflake/platform.h"
 
 #define STATUS_SKIPPED "SKIPPED"
 #define STATUS_UPLOADED "UPLOADED"

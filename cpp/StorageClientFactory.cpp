@@ -4,6 +4,7 @@
 
 #include "snowflake/SnowflakeTransferException.hpp"
 #include "StorageClientFactory.hpp"
+#include "SnowflakeAzureClient.hpp"
 #include "SnowflakeS3Client.hpp"
 #include "logger/SFLogger.hpp"
 
@@ -26,8 +27,8 @@ IStorageClient * StorageClientFactory::getClient(
     case StageType::MOCKED_STAGE_TYPE:
       return injectedClient;
     case StageType::AZURE:
-      throw SnowflakeTransferException(TransferError::UNSUPPORTED_FEATURE,
-        "File transfer to Azure is not supported yet.");
+      CXX_LOG_INFO("Creating Azure client");
+      return new SnowflakeAzureClient(stageInfo, parallel);
     default:
       // invalid stage type
       throw SnowflakeTransferException(TransferError::UNSUPPORTED_FEATURE,

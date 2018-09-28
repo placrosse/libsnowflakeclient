@@ -86,7 +86,7 @@ cmake %CPPRESTSDK_SOURCE_DIR% ^
 -DOPENSSL_ROOT_DIR=%scriptdir%\..\deps-build\%arcdir%\openssl ^
 -DOPENSSL_LIBRARIES=%scriptdir%\..\deps-build\%arcdir%\openssl\lib ^
 -DZLIB_LIBRARY=%scriptdir%\..\deps-build\%arcdir%\zlib\lib\ ^
--DZLIB_INCLUDE_DIRS=%scriptdir%\..\deps-build\%arcdir%\zlib\include ^
+-DZLIB_INCLUDE_DIR=%scriptdir%\..\deps-build\%arcdir%\zlib\include ^
 -DBUILD_TESTS=OFF ^
 -DBUILD_SHARED_LIBS=off ^
 -DSTATIC_LINKING=on ^

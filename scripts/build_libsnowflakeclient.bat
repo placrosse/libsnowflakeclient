@@ -21,7 +21,12 @@ if not "%VisualStudioVersion%"=="14.0" (
     if %ERRORLEVEL% NEQ 0 goto :error
 )
 
+:: Build awssdk
 if not exist %scriptdir%\..\deps-build\%arcdir%\aws\ call "%scriptdir%\build_awssdk.bat" %platform% %build_type% %dynamic_runtime%
+if %ERRORLEVEL% NEQ 0 goto :error
+
+:: Build azure storage cpp
+if not exist %scriptdir%\..\deps-build\%arcdir%\azure_storage_cpp\ call "%scriptdir%\build_azurestoragecpp.bat" %platform% %build_type% %dynamic_runtime%
 if %ERRORLEVEL% NEQ 0 goto :error
 
 rmdir /q /s cmake-build-%arcdir%

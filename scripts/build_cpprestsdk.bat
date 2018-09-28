@@ -50,7 +50,7 @@ if %ERRORLEVEL% NEQ 0 goto :error
 cd %CPPRESTSDK_CMAKE_BUILD_DIR% 
 if %ERRORLEVEL% NEQ 0 goto :error
 
-:: A hack to overcome cmake not founding crypto library
+:: rename openssl lib
 copy /y "%scriptdir%\..\deps-build\%arcdir%\openssl\lib\libcrypto_a.lib" ^
 "%scriptdir%\..\deps-build\%arcdir%\openssl\lib\libcrypto.lib"
 if %ERRORLEVEL% NEQ 0 goto :error
@@ -59,6 +59,25 @@ copy /y "%scriptdir%\..\deps-build\%arcdir%\openssl\lib\libssl_a.lib" ^
 "%scriptdir%\..\deps-build\%arcdir%\openssl\lib\libssl.lib"
 if %ERRORLEVEL% NEQ 0 goto :error
 
+:: rename boost lib
+copy /y "%scriptdir%\..\deps-build\%arcdir%\boost\lib\libboost_date_time-vc140-mt-s-1_64.lib" ^
+"%scriptdir%\..\deps-build\%arcdir%\boost\lib\boost_date_time.lib"
+if %ERRORLEVEL% NEQ 0 goto :error
+
+copy /y "%scriptdir%\..\deps-build\%arcdir%\boost\lib\libboost_regex-vc140-mt-s-1_64.lib" ^
+"%scriptdir%\..\deps-build\%arcdir%\boost\lib\boost_regex.lib"
+if %ERRORLEVEL% NEQ 0 goto :error
+
+copy /y "%scriptdir%\..\deps-build\%arcdir%\boost\lib\libboost_system-vc140-mt-s-1_64.lib" ^
+"%scriptdir%\..\deps-build\%arcdir%\boost\lib\boost_system.lib"
+if %ERRORLEVEL% NEQ 0 goto :error
+
+:: rename zlib
+copy /y "%scriptdir%\..\deps-build\%arcdir%\zlib\lib\zlib_a.lib" ^
+"%scriptdir%\..\deps-build\%arcdir%\zlib\lib\zlib.lib"
+if %ERRORLEVEL% NEQ 0 goto :error
+
+
 cmake %CPPRESTSDK_SOURCE_DIR% ^
 -G %generator% ^
 -DBOOST_ROOT=%scriptdir%\..\deps-build\%arcdir%\boost ^
@@ -66,7 +85,7 @@ cmake %CPPRESTSDK_SOURCE_DIR% ^
 -DBOOST_LIBRARYDIR=%scriptdir%\..\deps-build\%arcdir%\boost\lib ^
 -DOPENSSL_ROOT_DIR=%scriptdir%\..\deps-build\%arcdir%\openssl ^
 -DOPENSSL_LIBRARIES=%scriptdir%\..\deps-build\%arcdir%\openssl\lib ^
--DZLIB_LIBRARY=%scriptdir%\..\deps-build\%arcdir%\zlib\lib\zlib_a.lib ^
+-DZLIB_LIBRARY=%scriptdir%\..\deps-build\%arcdir%\zlib\lib\ ^
 -DZLIB_INCLUDE_DIRS=%scriptdir%\..\deps-build\%arcdir%\zlib\include ^
 -DBUILD_TESTS=OFF ^
 -DBUILD_SHARED_LIBS=off ^

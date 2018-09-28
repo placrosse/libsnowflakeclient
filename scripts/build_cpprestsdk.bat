@@ -24,6 +24,17 @@ if "%platform%"=="x86" (
 set CPPRESTSDK_SOURCE_DIR=%scriptdir%\..\deps\cpprestsdk-2.10.4
 if %ERRORLEVEL% NEQ 0 goto :error
 
+if not exist "%CPPRESTSDK_SOURCE_DIR%" (
+  cd %scriptdir%\..\deps
+
+  curl -L https://github.com/howryu/cpprestsdk/archive/v2.10.4.zip > cpprestsdk-2.10.4.zip
+  if %ERRORLEVEL% NEQ 0 goto :error
+  
+  unzip cpprestsdk-2.10.4
+  if %ERRORLEVEL% NEQ 0 goto :error
+) 
+
+
 set CPPRESTSDK_CMAKE_BUILD_DIR=%CPPRESTSDK_SOURCE_DIR%\cmake-build
 if %ERRORLEVEL% NEQ 0 goto :error
 
@@ -39,8 +50,14 @@ if %ERRORLEVEL% NEQ 0 goto :error
 cd %CPPRESTSDK_CMAKE_BUILD_DIR% 
 if %ERRORLEVEL% NEQ 0 goto :error
 
-REM https://github.com/aws/aws-sdk-cpp/issues/383
-::set GIT_DIR=%TMP%
+:: A hack to overcome cmake not founding crypto library
+copy /y "%scriptdir%\..\deps-build\%arcdir%\openssl\lib\libcrypto_a.lib" ^
+"%scriptdir%\..\deps-build\%arcdir%\openssl\lib\libcrypto.lib"
+if %ERRORLEVEL% NEQ 0 goto :error
+
+copy /y "%scriptdir%\..\deps-build\%arcdir%\openssl\lib\libssl_a.lib" ^
+"%scriptdir%\..\deps-build\%arcdir%\openssl\lib\libssl.lib"
+if %ERRORLEVEL% NEQ 0 goto :error
 
 cmake %CPPRESTSDK_SOURCE_DIR% ^
 -G %generator% ^
